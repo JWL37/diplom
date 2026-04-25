@@ -1,0 +1,30 @@
+CREATE TYPE class_status AS ENUM ('DRAFT', 'ACTIVE');
+CREATE TYPE build_status AS ENUM ('PENDING', 'BUILDING', 'SUCCESS', 'FAILED');
+
+CREATE TABLE prediction_classes (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL UNIQUE,
+    description TEXT,
+    status class_status NOT NULL DEFAULT 'DRAFT',
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE goldens (
+    id SERIAL PRIMARY KEY,
+    class_id INTEGER NOT NULL REFERENCES prediction_classes(id) ON DELETE CASCADE,
+    text_content TEXT NOT NULL UNIQUE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE model_builds (
+    id SERIAL PRIMARY KEY,
+    version_tag VARCHAR(100) NOT NULL UNIQUE,
+    status build_status NOT NULL DEFAULT 'PENDING',
+    snapshot_data JSONB NOT NULL,
+    artifact_uri VARCHAR(255),
+    error_message TEXT,
+    is_active BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    finished_at TIMESTAMP WITH TIME ZONE
+);

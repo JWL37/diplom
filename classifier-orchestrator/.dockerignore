@@ -1,0 +1,11 @@
+# Откомпилированные бинарники
+classifier-orchestrator
+
+# Кэш
+vendor/
+.vsc/
+.idea/
+
+# Docker
+Dockerfile
+.dockerignore

@@ -16,3 +16,7 @@ classifier/meta.json
 # Системные файлы macOS/Windows (на всякий случай)
 .DS_Store
 Thumbs.db
+
+# Служебные файлы описания
+classifier-orchestrator/service.md
+
