@@ -17,6 +17,5 @@ classifier/meta.json
 .DS_Store
 Thumbs.db
 
-# Служебные файлы описания
-classifier-orchestrator/service.md
+
 
