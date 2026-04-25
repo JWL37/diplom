@@ -21,7 +21,11 @@ func main() {
 
 	cfg := config.LoadConfig()
 
-	application := app.New(logger, cfg)
+	application, err := app.New(ctx, logger, cfg)
+	if err != nil {
+		logger.Error("Failed to initialize application", slog.String("error", err.Error()))
+		os.Exit(1)
+	}
 
 	if err := application.Run(ctx); err != nil {
 		logger.Error("Application failed to run", slog.String("error", err.Error()))

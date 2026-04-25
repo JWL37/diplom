@@ -2,12 +2,15 @@ package rest
 
 import (
 	"log/slog"
+	"net/http"
+
+	"classifier-orchestrator/internal/usecase/create_class"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 )
 
-func NewRouter(logger *slog.Logger) *chi.Mux {
+func NewRouter(logger *slog.Logger, createClassUseCase create_class.UseCase) *chi.Mux {
 	r := chi.NewRouter()
 
 	r.Use(middleware.RequestID)
@@ -16,6 +19,8 @@ func NewRouter(logger *slog.Logger) *chi.Mux {
 	r.Use(middleware.Recoverer)
 
 	r.Get("/ping", HandlePing(logger))
+
+	r.Method(http.MethodPost, "/api/v1/classes", NewCreateClassHandler(logger, createClassUseCase))
 
 	return r
 }

@@ -8,17 +8,31 @@ import (
 	"net/http"
 	"time"
 
+	"classifier-orchestrator/internal/app/database"
 	"classifier-orchestrator/internal/app/rest"
 	"classifier-orchestrator/internal/config"
+	usecaseCreateClass "classifier-orchestrator/internal/usecase/create_class"
+	repoCreateClass "classifier-orchestrator/internal/usecase/create_class/repository"
+
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type App struct {
 	logger  *slog.Logger
 	httpSrv *http.Server
+	db      *pgxpool.Pool
 }
 
-func New(logger *slog.Logger, cfg *config.Config) *App {
-	router := rest.NewRouter(logger)
+func New(ctx context.Context, logger *slog.Logger, cfg *config.Config) (*App, error) {
+	db, err := database.NewPostgresDB(ctx, logger, cfg)
+	if err != nil {
+		return nil, fmt.Errorf("database initialization error: %w", err)
+	}
+
+	classRepo := repoCreateClass.New(db)
+	createClassUseCase := usecaseCreateClass.New(classRepo)
+
+	router := rest.NewRouter(logger, createClassUseCase)
 
 	srv := &http.Server{
 		Addr:         ":" + cfg.Port,
@@ -31,7 +45,8 @@ func New(logger *slog.Logger, cfg *config.Config) *App {
 	return &App{
 		logger:  logger,
 		httpSrv: srv,
-	}
+		db:      db,
+	}, nil
 }
 
 func (a *App) Run(ctx context.Context) error {
@@ -57,6 +72,9 @@ func (a *App) Run(ctx context.Context) error {
 		if err := a.httpSrv.Shutdown(shutdownCtx); err != nil {
 			return fmt.Errorf("http server shutdown error: %w", err)
 		}
+
+		a.db.Close()
+		a.logger.Info("Database connection pool closed")
 		a.logger.Info("Server stopped")
 	}
 
