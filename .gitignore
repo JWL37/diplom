@@ -1,0 +1,18 @@
+# Виртуальное окружение
+venv/
+env/
+.env
+
+# Python кэш
+__pycache__/
+*.pyc
+
+# Данные и артефакты модели
+dataset.txt
+classifier/goldens.csv
+classifier/golden_index.faiss
+classifier/meta.json
+
+# Системные файлы macOS/Windows (на всякий случай)
+.DS_Store
+Thumbs.db
