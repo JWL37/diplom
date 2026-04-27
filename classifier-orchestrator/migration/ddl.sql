@@ -1,5 +1,5 @@
 CREATE TYPE class_status AS ENUM ('DRAFT', 'ACTIVE');
-CREATE TYPE build_status AS ENUM ('PENDING', 'BUILDING', 'SUCCESS', 'FAILED');
+CREATE TYPE build_status AS ENUM ('PENDING', 'BUILDING', 'SUCCESS', 'FAILED', 'RELEASED');
 
 CREATE TABLE prediction_classes (
     id SERIAL PRIMARY KEY,
@@ -10,11 +10,23 @@ CREATE TABLE prediction_classes (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE goldens (
+CREATE TABLE positive_goldens (
     id SERIAL PRIMARY KEY,
     class_id INTEGER NOT NULL REFERENCES prediction_classes(id) ON DELETE CASCADE,
     text_content TEXT NOT NULL UNIQUE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE negative_goldens (
+    id SERIAL PRIMARY KEY,
+    text_content TEXT NOT NULL UNIQUE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE class_negative_goldens (
+    class_id INTEGER NOT NULL REFERENCES prediction_classes(id) ON DELETE CASCADE,
+    negative_golden_id INTEGER NOT NULL REFERENCES negative_goldens(id) ON DELETE CASCADE,
+    PRIMARY KEY (class_id, negative_golden_id)
 );
 
 CREATE TABLE model_builds (
