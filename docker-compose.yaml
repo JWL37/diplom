@@ -11,30 +11,31 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./classifier-orchestrator/migration/ddl.sql:/docker-entrypoint-initdb.d/ddl.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d classifier_orchestrator"]
       interval: 5s
       timeout: 3s
       retries: 10
 
-  classifier-orchestrator:
-    build:
-      context: ./classifier-orchestrator
-      dockerfile: Dockerfile
-    container_name: classifier-orchestrator
-    restart: unless-stopped
-    environment:
-      PORT: "8080"
-      DB_HOST: postgres
-      DB_PORT: "5432"
-      DB_NAME: classifier_orchestrator
-      DB_USER: postgres
-      DB_PASSWORD: postgres
-    ports:
-      - "8080:8080"
-    depends_on:
-      postgres:
-        condition: service_healthy
+  # classifier-orchestrator:
+  #   build:
+  #     context: ./classifier-orchestrator
+  #     dockerfile: Dockerfile
+  #   container_name: classifier-orchestrator
+  #   restart: unless-stopped
+  #   environment:
+  #     PORT: "8080"
+  #     DB_HOST: postgres
+  #     DB_PORT: "5432"
+  #     DB_NAME: classifier_orchestrator
+  #     DB_USER: postgres
+  #     DB_PASSWORD: postgres
+  #   ports:
+  #     - "8080:8080"
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
 
 volumes:
   postgres_data:
