@@ -14,6 +14,16 @@ func (u *useCase) Execute(ctx context.Context, input dto.CreateClassRequest) (dt
 		Description: input.Description,
 	}
 
+	repoInput.PositiveGoldens = make([]repoDto.GoldenInput, 0, len(input.PositiveGoldens))
+	for _, golden := range input.PositiveGoldens {
+		repoInput.PositiveGoldens = append(repoInput.PositiveGoldens, repoDto.GoldenInput{Text: golden.Text})
+	}
+
+	repoInput.NegativeGoldens = make([]repoDto.GoldenInput, 0, len(input.NegativeGoldens))
+	for _, golden := range input.NegativeGoldens {
+		repoInput.NegativeGoldens = append(repoInput.NegativeGoldens, repoDto.GoldenInput{Text: golden.Text})
+	}
+
 	repoOutput, err := u.repo.CreateClass(ctx, repoInput)
 	if err != nil {
 		return dto.CreateClassResponse{}, fmt.Errorf("failed to create class in repository: %w", err)

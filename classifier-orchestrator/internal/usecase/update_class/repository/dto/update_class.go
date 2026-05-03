@@ -1,6 +1,7 @@
 package dto
 
-type CreateClassInput struct {
+type UpdateClassInput struct {
+	ID              int32
 	Name            string
 	Description     string
 	PositiveGoldens []GoldenInput
@@ -11,6 +12,8 @@ type GoldenInput struct {
 	Text string
 }
 
-type CreateClassOutput struct {
-	ID int32
+type UpdateClassOutput struct {
+	ID          int32
+	Name        string
+	Description string
 }

@@ -13,6 +13,10 @@ import (
 	"classifier-orchestrator/internal/config"
 	usecaseCreateClass "classifier-orchestrator/internal/usecase/create_class"
 	repoCreateClass "classifier-orchestrator/internal/usecase/create_class/repository"
+	usecaseListClasses "classifier-orchestrator/internal/usecase/list_classes"
+	repoListClasses "classifier-orchestrator/internal/usecase/list_classes/repository"
+	usecaseUpdateClass "classifier-orchestrator/internal/usecase/update_class"
+	repoUpdateClass "classifier-orchestrator/internal/usecase/update_class/repository"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 )
@@ -31,8 +35,12 @@ func New(ctx context.Context, logger *slog.Logger, cfg *config.Config) (*App, er
 
 	classRepo := repoCreateClass.New(db)
 	createClassUseCase := usecaseCreateClass.New(classRepo)
+	listClassesRepo := repoListClasses.New(db)
+	listClassesUseCase := usecaseListClasses.New(listClassesRepo)
+	updateClassRepo := repoUpdateClass.New(db)
+	updateClassUseCase := usecaseUpdateClass.New(updateClassRepo)
 
-	router := rest.NewRouter(logger, createClassUseCase)
+	router := rest.NewRouter(logger, createClassUseCase, listClassesUseCase, updateClassUseCase)
 
 	srv := &http.Server{
 		Addr:         ":" + cfg.Port,

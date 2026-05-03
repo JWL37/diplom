@@ -1,0 +1,245 @@
+openapi: 3.0.3
+info:
+  title: Classifier Orchestrator API
+  version: 0.1.0
+servers:
+  - url: http://localhost:8080
+paths:
+  /ping:
+    get:
+      summary: Health check
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+  /api/v1/classes:
+    post:
+      summary: Create class
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateClassRequest"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Class"
+        "400":
+          description: Bad request
+        "500":
+          description: Internal error
+    get:
+      summary: List classes
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Class"
+  /api/v1/classes/{classId}:
+    patch:
+      summary: Update class and goldens
+      parameters:
+        - name: classId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateClassRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Class"
+        "400":
+          description: Bad request
+        "404":
+          description: Not found
+        "500":
+          description: Internal error
+  /api/v1/classes/{classId}/goldens:
+    post:
+      summary: Add golden
+      parameters:
+        - name: classId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateGoldenRequest"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Golden"
+        "400":
+          description: Bad request
+        "404":
+          description: Not found
+        "500":
+          description: Internal error
+  /api/v1/classes/{classId}/goldens/{goldenId}:
+    delete:
+      summary: Delete golden
+      parameters:
+        - name: classId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: goldenId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: No content
+        "404":
+          description: Not found
+        "500":
+          description: Internal error
+  /api/v1/goldens/search:
+    get:
+      summary: Search by golden text
+      parameters:
+        - name: text
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GoldenSearchResult"
+        "400":
+          description: Bad request
+        "500":
+          description: Internal error
+components:
+  schemas:
+    Class:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+      required:
+        - id
+        - name
+    CreateClassRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        positiveGoldens:
+          type: array
+          items:
+            $ref: "#/components/schemas/GoldenInput"
+          minItems: 1
+        negativeGoldens:
+          type: array
+          items:
+            $ref: "#/components/schemas/GoldenInput"
+      required:
+        - name
+        - positiveGoldens
+    UpdateClassRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        positiveGoldens:
+          type: array
+          items:
+            $ref: "#/components/schemas/GoldenInput"
+          minItems: 1
+        negativeGoldens:
+          type: array
+          items:
+            $ref: "#/components/schemas/GoldenInput"
+      required:
+        - name
+        - positiveGoldens
+    Golden:
+      type: object
+      properties:
+        id:
+          type: string
+        classId:
+          type: string
+        text:
+          type: string
+        polarity:
+          type: string
+          enum:
+            - positive
+            - negative
+      required:
+        - id
+        - classId
+        - text
+        - polarity
+    GoldenInput:
+      type: object
+      properties:
+        text:
+          type: string
+      required:
+        - text
+    CreateGoldenRequest:
+      type: object
+      properties:
+        text:
+          type: string
+        polarity:
+          type: string
+          enum:
+            - positive
+            - negative
+      required:
+        - text
+        - polarity
+    GoldenSearchResult:
+      type: object
+      properties:
+        golden:
+          $ref: "#/components/schemas/Golden"
+        class:
+          $ref: "#/components/schemas/Class"
+      required:
+        - golden
+        - class

@@ -1,6 +1,7 @@
 package dto
 
-type CreateClassRequest struct {
+type UpdateClassRequest struct {
+	ID              int32         `json:"-"`
 	Name            string        `json:"name"`
 	Description     string        `json:"description"`
 	PositiveGoldens []GoldenInput `json:"positiveGoldens"`
@@ -11,6 +12,8 @@ type GoldenInput struct {
 	Text string `json:"text"`
 }
 
-type CreateClassResponse struct {
-	ID int32 `json:"id"`
+type UpdateClassResponse struct {
+	ID          int32  `json:"id"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
 }
