@@ -1,0 +1,371 @@
+:root {
+  color: #202124;
+  background: #f5f7f8;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled,
+input:disabled {
+  cursor: not-allowed;
+  opacity: 0.62;
+}
+
+.page {
+  min-height: 100vh;
+  padding: 32px;
+}
+
+.panel {
+  width: min(1180px, 100%);
+  margin: 0 auto;
+}
+
+.pageHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 20px;
+}
+
+.eyebrow {
+  margin: 0 0 6px;
+  color: #5f6368;
+  font-size: 13px;
+  text-transform: uppercase;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  margin-bottom: 0;
+  font-size: 32px;
+  font-weight: 700;
+}
+
+h2 {
+  margin-bottom: 4px;
+  font-size: 18px;
+  line-height: 1.25;
+}
+
+h3 {
+  margin-bottom: 0;
+  font-size: 16px;
+}
+
+.loadState {
+  min-width: 108px;
+  padding: 8px 12px;
+  border: 1px solid #d9dee3;
+  border-radius: 6px;
+  background: #ffffff;
+  text-align: center;
+}
+
+.error {
+  margin: 0 0 12px;
+  color: #b42318;
+}
+
+.emptyState,
+.muted {
+  color: #5f6368;
+}
+
+.createClassForm {
+  display: grid;
+  grid-template-columns: 1fr 1.25fr 1.25fr auto;
+  gap: 10px;
+  margin-bottom: 18px;
+  padding: 12px;
+  border: 1px solid #d9dee3;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+input {
+  min-width: 0;
+  width: 100%;
+  height: 40px;
+  padding: 8px 10px;
+  border: 1px solid #cbd2d9;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #202124;
+}
+
+input:focus {
+  border-color: #386a8f;
+  outline: 2px solid rgba(56, 106, 143, 0.18);
+}
+
+.primaryButton,
+.secondaryButton,
+.smallDangerButton,
+.dangerIconButton {
+  min-height: 36px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  font-weight: 600;
+}
+
+.primaryButton {
+  padding: 8px 14px;
+  background: #2f6652;
+  color: #ffffff;
+}
+
+.secondaryButton {
+  padding: 8px 12px;
+  border-color: #cbd2d9;
+  background: #ffffff;
+  color: #202124;
+}
+
+.smallDangerButton {
+  min-height: 30px;
+  padding: 5px 9px;
+  border-color: #efb4ac;
+  background: #fff7f5;
+  color: #b42318;
+}
+
+.dangerIconButton {
+  width: 38px;
+  min-width: 38px;
+  padding: 0;
+  border-color: #efb4ac;
+  background: #fff7f5;
+  color: #b42318;
+  font-size: 24px;
+  line-height: 1;
+}
+
+.classList {
+  display: grid;
+  gap: 10px;
+}
+
+.classCard {
+  overflow: hidden;
+  border: 1px solid #d9dee3;
+  border-left: 4px solid #d9dee3;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.classCard.activeClass {
+  border-left-color: #2f8f62;
+}
+
+.classRow {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) auto auto auto;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+}
+
+.classRow:focus {
+  outline: 2px solid rgba(56, 106, 143, 0.25);
+  outline-offset: -2px;
+}
+
+.classMain p {
+  margin-bottom: 0;
+  color: #5f6368;
+}
+
+.classCounters,
+.rowActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.classCounters span {
+  min-width: 44px;
+  padding: 5px 8px;
+  border: 1px solid #d9dee3;
+  border-radius: 6px;
+  background: #f8fafb;
+  text-align: center;
+}
+
+.statusBadge {
+  min-width: 76px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.statusBadge.active {
+  background: #e7f6ed;
+  color: #16643c;
+}
+
+.statusBadge.draft {
+  background: #edf0f3;
+  color: #4b5563;
+}
+
+.classDetails {
+  padding: 16px;
+  border-top: 1px solid #e5e9ed;
+  background: #fbfcfd;
+}
+
+.detailsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0 0 16px;
+}
+
+.detailsGrid div {
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid #e1e6ea;
+  border-radius: 6px;
+  background: #ffffff;
+}
+
+.detailsGrid dt {
+  margin-bottom: 4px;
+  color: #5f6368;
+  font-size: 13px;
+}
+
+.detailsGrid dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.goldenColumns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.goldenSection {
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid #e1e6ea;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.polarityMark {
+  min-width: 32px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.polarityMark.positive {
+  background: #e7f6ed;
+  color: #16643c;
+}
+
+.polarityMark.negative {
+  background: #fff1d6;
+  color: #805100;
+}
+
+.goldenList {
+  display: grid;
+  gap: 8px;
+  margin: 0 0 12px;
+  padding: 0;
+  list-style: none;
+}
+
+.goldenList li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid #edf0f3;
+  border-radius: 6px;
+  background: #fbfcfd;
+}
+
+.goldenList span {
+  overflow-wrap: anywhere;
+  line-height: 1.35;
+}
+
+.goldenForm {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+}
+
+@media (max-width: 900px) {
+  .createClassForm,
+  .classRow,
+  .goldenColumns,
+  .detailsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .classCounters,
+  .rowActions {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding: 20px;
+  }
+
+  .pageHeader {
+    display: grid;
+  }
+
+  .goldenForm {
+    grid-template-columns: 1fr;
+  }
+}

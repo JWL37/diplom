@@ -18,24 +18,35 @@ services:
       timeout: 3s
       retries: 10
 
-  # classifier-orchestrator:
-  #   build:
-  #     context: ./classifier-orchestrator
-  #     dockerfile: Dockerfile
-  #   container_name: classifier-orchestrator
-  #   restart: unless-stopped
-  #   environment:
-  #     PORT: "8080"
-  #     DB_HOST: postgres
-  #     DB_PORT: "5432"
-  #     DB_NAME: classifier_orchestrator
-  #     DB_USER: postgres
-  #     DB_PASSWORD: postgres
-  #   ports:
-  #     - "8080:8080"
-  #   depends_on:
-  #     postgres:
-  #       condition: service_healthy
+  classifier-orchestrator:
+    build:
+      context: ./classifier-orchestrator
+      dockerfile: Dockerfile
+    container_name: classifier-orchestrator
+    restart: unless-stopped
+    environment:
+      PORT: "8080"
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_NAME: classifier_orchestrator
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  classifier-web:
+    build:
+      context: ./classifier-web
+      dockerfile: Dockerfile
+    container_name: classifier-web
+    restart: unless-stopped
+    ports:
+      - "5173:80"
+    depends_on:
+      - classifier-orchestrator
 
 volumes:
   postgres_data:

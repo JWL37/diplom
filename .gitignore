@@ -7,6 +7,12 @@ env/
 __pycache__/
 *.pyc
 
+# Node.js
+node_modules/
+dist/
+dist-ssr/
+*.local
+
 # Данные и артефакты модели
 dataset.txt
 classifier/goldens.csv
@@ -17,5 +23,7 @@ classifier/meta.json
 .DS_Store
 Thumbs.db
 
-
+# Локальные служебные файлы Codex
+.agents/
+.codex/
 

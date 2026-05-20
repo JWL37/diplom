@@ -257,6 +257,8 @@ components:
       properties:
         name:
           type: string
+        description:
+          type: string
         positiveGoldens:
           type: array
           items:
