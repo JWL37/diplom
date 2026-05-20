@@ -16,6 +16,7 @@ RUN apk --no-cache add ca-certificates tzdata
 WORKDIR /app
 
 COPY --from=builder /app/classifier-orchestrator .
+COPY --from=builder /app/api ./api
 
 ENV PORT=8080
 EXPOSE 8080

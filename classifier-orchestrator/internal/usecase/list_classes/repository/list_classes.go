@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 
 	"classifier-orchestrator/internal/usecase/list_classes/repository/dto"
@@ -9,9 +10,40 @@ import (
 
 func (r *repository) ListClasses(ctx context.Context) (dto.ListClassesOutput, error) {
 	const query = `
-		SELECT id, name, description
-		FROM prediction_classes
-		ORDER BY id
+		SELECT
+			pc.id,
+			pc.name,
+			COALESCE(pc.description, ''),
+			pc.status::text,
+			pc.created_at,
+			pc.updated_at,
+			COALESCE(positive.positive_goldens, '[]'::jsonb),
+			COALESCE(negative.negative_goldens, '[]'::jsonb)
+		FROM prediction_classes pc
+		LEFT JOIN LATERAL (
+			SELECT jsonb_agg(
+				jsonb_build_object(
+					'id', pg.id,
+					'text', pg.text_content
+				)
+				ORDER BY pg.id
+			) AS positive_goldens
+			FROM positive_goldens pg
+			WHERE pg.class_id = pc.id
+		) positive ON TRUE
+		LEFT JOIN LATERAL (
+			SELECT jsonb_agg(
+				jsonb_build_object(
+					'id', ng.id,
+					'text', ng.text_content
+				)
+				ORDER BY ng.id
+			) AS negative_goldens
+			FROM class_negative_goldens cng
+			JOIN negative_goldens ng ON ng.id = cng.negative_golden_id
+			WHERE cng.class_id = pc.id
+		) negative ON TRUE
+		ORDER BY pc.id
 	`
 
 	rows, err := r.db.Query(ctx, query)
@@ -23,8 +55,25 @@ func (r *repository) ListClasses(ctx context.Context) (dto.ListClassesOutput, er
 	classes := make(dto.ListClassesOutput, 0)
 	for rows.Next() {
 		var class dto.Class
-		if err := rows.Scan(&class.ID, &class.Name, &class.Description); err != nil {
+		var positiveGoldens []byte
+		var negativeGoldens []byte
+		if err := rows.Scan(
+			&class.ID,
+			&class.Name,
+			&class.Description,
+			&class.Status,
+			&class.CreatedAt,
+			&class.UpdatedAt,
+			&positiveGoldens,
+			&negativeGoldens,
+		); err != nil {
 			return nil, fmt.Errorf("failed to scan class: %w", err)
+		}
+		if err := json.Unmarshal(positiveGoldens, &class.PositiveGoldens); err != nil {
+			return nil, fmt.Errorf("failed to unmarshal positive goldens: %w", err)
+		}
+		if err := json.Unmarshal(negativeGoldens, &class.NegativeGoldens); err != nil {
+			return nil, fmt.Errorf("failed to unmarshal negative goldens: %w", err)
 		}
 		classes = append(classes, class)
 	}

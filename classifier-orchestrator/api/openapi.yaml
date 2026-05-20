@@ -48,7 +48,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Class"
+                  $ref: "#/components/schemas/ClassListItem"
   /api/v1/classes/{classId}:
     patch:
       summary: Update class and goldens
@@ -57,7 +57,7 @@ paths:
           in: path
           required: true
           schema:
-            type: string
+            type: integer
       requestBody:
         required: true
         content:
@@ -77,6 +77,34 @@ paths:
           description: Not found
         "500":
           description: Internal error
+  /api/v1/classes/{classId}/status:
+    patch:
+      summary: Update class status
+      parameters:
+        - name: classId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateClassStatusRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UpdateClassStatusResponse"
+        "400":
+          description: Bad request
+        "404":
+          description: Not found
+        "500":
+          description: Internal error
   /api/v1/classes/{classId}/goldens:
     post:
       summary: Add golden
@@ -85,7 +113,7 @@ paths:
           in: path
           required: true
           schema:
-            type: string
+            type: integer
       requestBody:
         required: true
         content:
@@ -113,12 +141,12 @@ paths:
           in: path
           required: true
           schema:
-            type: string
+            type: integer
         - name: goldenId
           in: path
           required: true
           schema:
-            type: string
+            type: integer
       responses:
         "204":
           description: No content
@@ -154,12 +182,59 @@ components:
       type: object
       properties:
         id:
-          type: string
+          type: integer
         name:
           type: string
       required:
         - id
         - name
+    ClassListItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum:
+            - DRAFT
+            - ACTIVE
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        positiveGoldens:
+          type: array
+          items:
+            $ref: "#/components/schemas/ClassGolden"
+        negativeGoldens:
+          type: array
+          items:
+            $ref: "#/components/schemas/ClassGolden"
+      required:
+        - id
+        - name
+        - description
+        - status
+        - createdAt
+        - updatedAt
+        - positiveGoldens
+        - negativeGoldens
+    ClassGolden:
+      type: object
+      properties:
+        id:
+          type: integer
+        text:
+          type: string
+      required:
+        - id
+        - text
     CreateClassRequest:
       type: object
       properties:
@@ -194,13 +269,46 @@ components:
       required:
         - name
         - positiveGoldens
+    UpdateClassStatusRequest:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+            - DRAFT
+            - ACTIVE
+      required:
+        - status
+    UpdateClassStatusResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum:
+            - DRAFT
+            - ACTIVE
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - description
+        - status
+        - updatedAt
     Golden:
       type: object
       properties:
         id:
-          type: string
+          type: integer
         classId:
-          type: string
+          type: integer
         text:
           type: string
         polarity:
